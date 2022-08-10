@@ -4,21 +4,33 @@ provider "aws" {
   secret_key = ""
 }
 
+variable "vpc_cidr_block" {
+  description = "vpc cidr block"
+}
+
+variable "subnet_cidr_block" {
+  description = "subnet cidr block"
+}
+
+variable "environment" {
+  description = "environment"
+}
+
 resource "aws_vpc" "dev-vpc" {
-  cidr_block = "10.0.0.0/16"
+  cidr_block = var.vpc_cidr_block
   tags = {
     Name : "development"
-    vpc_env : "dev"
+    vpc_env : var.environment
   }
 }
 
 resource "aws_subnet" "dev-subnet-1" {
   vpc_id            = aws_vpc.dev-vpc.id
-  cidr_block        = "10.0.10.0/24"
+  cidr_block        = var.subnet_cidr_block
   availability_zone = "ca-central-1a"
   tags = {
     Name : "subnet-1-development",
-    vpc_env : "dev"
+    vpc_env : var.environment
   }
 }
 
