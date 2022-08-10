@@ -1,7 +1,5 @@
 provider "aws" {
-  region     = "ca-central-1"
-  access_key = ""
-  secret_key = ""
+  region = "ca-central-1"
 }
 
 variable "vpc_cidr_block" {
