@@ -43,16 +43,18 @@ resource "aws_internet_gateway" "dev-app-igw" {
   }
 }
 
-
-
-resource "aws_default_route_table" "main-rtb" {
-  default_route_table_id = aws_vpc.dev-app-vpc.default_route_table_id
+resource "aws_route_table" "dev-app-route-table" {
+  vpc_id = aws_vpc.dev-app-vpc.id
 
   route {
     cidr_block = "0.0.0.0/0"
     gateway_id = aws_internet_gateway.dev-app-igw.id
   }
+
+  # default route, mapping VPC CIDR block to "local", created implicitly and cannot be specified.
+
   tags = {
-    Name = "${var.environment}-main-rtb"
+    Name = "${var.environment}-route-table"
   }
 }
+
