@@ -1,24 +1,3 @@
-provider "aws" {
-  region = "ca-central-1"
-}
-
-resource "aws_vpc" "dev-app-vpc" {
-  cidr_block = var.vpc_cidr_block
-  tags = {
-    Name : "${var.environment}-vpc"
-    vpc_env : var.environment
-  }
-}
-
-module "dev-app-subnet" {
-  source                 = "./modules/subnet"
-  subnet_cidr_block      = var.subnet_cidr_block
-  environment            = var.environment
-  available_zone         = var.available_zone
-  vpc_id                 = aws_vpc.dev-app-vpc.id
-  default_route_table_id = aws_vpc.dev-app-vpc.default_route_table_id
-}
-
 resource "aws_default_security_group" "default-sg" {
   vpc_id = aws_vpc.dev-app-vpc.id
 
