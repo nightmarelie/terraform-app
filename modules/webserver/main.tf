@@ -1,5 +1,5 @@
 resource "aws_default_security_group" "default-sg" {
-  vpc_id = aws_vpc.dev-app-vpc.id
+  vpc_id = var.vpc_id
 
   ingress {
     from_port   = 22
@@ -33,7 +33,7 @@ data "aws_ami" "latest-amazon-linux-image" {
   owners      = ["amazon"]
   filter {
     name   = "name"
-    values = ["amzn2-ami-hvm-*-x86_64-gp2"]
+    values = [var.image_name]
   }
   filter {
     name   = "virtualization-type"
@@ -51,7 +51,7 @@ resource "aws_instance" "dev-app-server" {
   ami           = data.aws_ami.latest-amazon-linux-image.id
   instance_type = var.instance_type
 
-  subnet_id              = module.dev-app-subnet.subnet.id
+  subnet_id              = var.subnet_id
   vpc_security_group_ids = [aws_default_security_group.default-sg.id]
   availability_zone      = var.available_zone
 

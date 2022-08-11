@@ -1,0 +1,9 @@
+variable "vpc_id" {}
+variable "my_ip" {}
+variable "environment" {}
+variable "available_zone" {}
+variable "public_key_location" {}
+variable "private_key_location" {}
+variable "image_name" {}
+variable "subnet_id" {}
+variable "instance_type" {}
