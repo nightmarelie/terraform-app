@@ -54,7 +54,12 @@ resource "aws_route_table" "dev-app-route-table" {
   # default route, mapping VPC CIDR block to "local", created implicitly and cannot be specified.
 
   tags = {
-    Name = "${var.environment}-route-table"
+    Name = "${var.environment}-rtb"
   }
 }
 
+# Associate subnet with Route Table
+resource "aws_route_table_association" "dev-app-rtb-subnet" {
+  subnet_id      = aws_subnet.dev-app-subnet-1.id
+  route_table_id = aws_route_table.dev-app-route-table.id
+}
