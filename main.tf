@@ -14,36 +14,45 @@ variable "environment" {
   description = "environment"
 }
 
-resource "aws_vpc" "dev-vpc" {
+variable "available_zone" {
+  description = "available zone"
+}
+
+resource "aws_vpc" "dev-app-vpc" {
   cidr_block = var.vpc_cidr_block
   tags = {
-    Name : "development"
+    Name : "${var.environment}-vpc"
     vpc_env : var.environment
   }
 }
 
-resource "aws_subnet" "dev-subnet-1" {
-  vpc_id            = aws_vpc.dev-vpc.id
+resource "aws_subnet" "dev-app-subnet-1" {
+  vpc_id            = aws_vpc.dev-app-vpc.id
   cidr_block        = var.subnet_cidr_block
-  availability_zone = "ca-central-1a"
+  availability_zone = var.available_zone
   tags = {
-    Name : "subnet-1-development",
+    Name : "${var.environment}-subnet-1"
     vpc_env : var.environment
   }
 }
 
-data "aws_vpc" "existing_vpc" {
-  default = true
+resource "aws_internet_gateway" "dev-app-igw" {
+  vpc_id = aws_vpc.dev-app-vpc.id
+  tags = {
+    Name = "${var.environment}-igw"
+  }
 }
 
 
 
-resource "aws_subnet" "dev-subnet-2" {
-  vpc_id            = data.aws_vpc.existing_vpc.id
-  cidr_block        = "172.31.48.0/20"
-  availability_zone = "ca-central-1a"
+resource "aws_default_route_table" "main-rtb" {
+  default_route_table_id = aws_vpc.dev-app-vpc.default_route_table_id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.dev-app-igw.id
+  }
   tags = {
-    Name : "subnet-2-default"
-    vpc_env : "default"
+    Name = "${var.environment}-main-rtb"
   }
 }
